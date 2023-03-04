@@ -7,12 +7,12 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+//import edu.wpi.first.math.geometry.Pose2d;
+//import edu.wpi.first.math.geometry.Rotation2d;
+//import edu.wpi.first.math.geometry.Translation2d;
+//import edu.wpi.first.math.trajectory.Trajectory;
+//import edu.wpi.first.math.trajectory.TrajectoryConfig;
+//import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
@@ -25,7 +25,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
+//import java.util.List;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -99,13 +103,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    //TrajectoryConfig config = new TrajectoryConfig(
+        //AutoConstants.kMaxSpeedMetersPerSecond,
+        //AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
+        //.setKinematics(DriveConstants.kDriveKinematics);
+    
+    /***
+     * // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
@@ -114,13 +119,17 @@ public class RobotContainer {
         // End 3 meters straight ahead of where we started, facing forward
         new Pose2d(3, 0, new Rotation2d(0)),
         config);
+    /*** */
+
+    // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("TestPath", new PathConstraints(4, 3));
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
+        examplePath,
         m_robotDrive::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -132,7 +141,7 @@ public class RobotContainer {
         m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(examplePath.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
