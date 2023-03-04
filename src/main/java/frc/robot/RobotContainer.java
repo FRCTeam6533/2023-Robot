@@ -102,16 +102,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    /*
     // Create config for trajectory
-    //TrajectoryConfig config = new TrajectoryConfig(
+    TrajectoryConfig config = new TrajectoryConfig(
         //AutoConstants.kMaxSpeedMetersPerSecond,
-        //AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
-        //.setKinematics(DriveConstants.kDriveKinematics);
+        .setKinematics(DriveConstants.kDriveKinematics);
     
-    /***
-     * // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+     // An example trajectory to follow. All units in meters.
+    Trajectory examplePath = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
@@ -119,9 +119,9 @@ public class RobotContainer {
         // End 3 meters straight ahead of where we started, facing forward
         new Pose2d(3, 0, new Rotation2d(0)),
         config);
-    /*** */
+     */
 
-    // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    // This will load the file "TestPath.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
     PathPlannerTrajectory examplePath = PathPlanner.loadPath("TestPath", new PathConstraints(4, 3));
 
     var thetaController = new ProfiledPIDController(
