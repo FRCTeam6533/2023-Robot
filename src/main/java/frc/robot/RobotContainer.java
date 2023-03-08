@@ -106,7 +106,7 @@ public class RobotContainer {
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         //AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        AutoConstants.kMaxAccele  rationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics);
     
@@ -122,7 +122,7 @@ public class RobotContainer {
      */
 
     // This will load the file "TestPath.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("TestPath", new PathConstraints(4, 3));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("CubeLeaveBalance", new PathConstraints(4, 3));
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);

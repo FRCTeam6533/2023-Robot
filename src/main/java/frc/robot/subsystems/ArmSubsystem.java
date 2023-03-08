@@ -117,6 +117,9 @@ public class ArmSubsystem extends SubsystemBase {
     LiftArm();
     BendArm(85);
     ExtendArm(32);
+    if (getArmAngle() > 80) {
+      release();
+    }
   }
   public void MidPlace() {
     //places the game piece in the middle row
