@@ -111,13 +111,18 @@ public class ArmSubsystem extends SubsystemBase {
     ExtendArm(0);
     //m_Talonmotor.set(ControlMode.PercentOutput, 0);
     //m_Talonmotor2.set(ControlMode.PercentOutput, 0);
+    if (m_Talonmotor2.getSelectedSensorVelocity() < 0.05 && getArmAngle() > 5){
+      m_Talonmotor2.setSelectedSensorPosition(0);
+    }
   }
   public void HighPlace() {
     //places game piece in the top row
     LiftArm();
     BendArm(85);
-    ExtendArm(32);
-    if (getArmAngle() > 80) {
+    if (getArmAngle()> 75) {
+      ExtendArm(32);
+    }
+    if (getExtension() > 30) {
       release();
     }
   }

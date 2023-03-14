@@ -92,6 +92,8 @@ public class RobotContainer {
         .whileTrue(new RunCommand(() -> m_ArmUse.grip(), m_ArmUse));
     new JoystickButton(m_driverController, edu.wpi.first.wpilibj.XboxController.Button.kY.value)
         .whileTrue(new RunCommand(() -> m_ArmUse.release(), m_ArmUse));
+    new JoystickButton(m_driverController, edu.wpi.first.wpilibj.XboxController.Button.kLeftStick.value)
+        .whileTrue(new RunCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
     new JoystickButton(m_driverController, edu.wpi.first.wpilibj.XboxController.Button.kStart.value)
         .whileTrue(new RunCommand(() -> m_ArmUse.ResetEncoders(), m_ArmUse));
   }
@@ -122,7 +124,7 @@ public class RobotContainer {
      */
 
     // This will load the file "TestPath.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("CubeLeaveBalance", new PathConstraints(4, 3));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("TestPath", new PathConstraints(4, 3));
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
