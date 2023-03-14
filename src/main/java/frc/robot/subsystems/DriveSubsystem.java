@@ -19,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import edu.wpi.first.networktables;
+import edu.wpi.first.math.controller.PIDController;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -54,6 +55,12 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  private static final double ABP = 0.06;
+  private static final double ABI = 0;
+  private static final double ABD = 0;
+
+  private final PIDController m_AutoBalance = new PIDController(ABP, ABI, ABD);
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -80,7 +87,9 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+        getTip();
     SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+    SmartDashboard.putNumber("Tip angle", getTip());
     //SmartDashboard.putNumber("getName()", m_currentRotation)
   }
 
@@ -200,6 +209,19 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  public double getTip() {
+    return m_gyro.getYComplementaryAngle();
+  }
+
+  /**
+   * Autobalances the robot
+   */
+  public void AutoBalance() {
+    m_frontLeft.setDesiredState(new SwerveModuleState(m_AutoBalance.calculate(getTip(), 0), Rotation2d.fromDegrees(0)));
+    m_frontRight.setDesiredState(new SwerveModuleState(m_AutoBalance.calculate(getTip(), 0), Rotation2d.fromDegrees(0)));
+    m_rearLeft.setDesiredState(new SwerveModuleState(m_AutoBalance.calculate(getTip(), 0), Rotation2d.fromDegrees(0)));
+    m_rearRight.setDesiredState(new SwerveModuleState(m_AutoBalance.calculate(getTip(), 0), Rotation2d.fromDegrees(0)));
+  }
   /**
    * Sets the swerve ModuleStates.
    *
