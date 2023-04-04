@@ -36,14 +36,15 @@ public class ArmSubsystem extends SubsystemBase {
   private static final double EkP = 0.3;
   private static final double EkI = 0;
   private static final double EkD = 0;
-  private static final double Bkp = 0.02;
+  private static final double Bkp = 0.1;
   private static final double BkI = 0;
   private static final double BkD = 0;
 
   private final ProfiledPIDController m_ExtenderPID = new ProfiledPIDController(EkP, EkI, EkD, 
     new TrapezoidProfile.Constraints(35, 30));
+  
   private final ProfiledPIDController m_BenderPID = new ProfiledPIDController(Bkp, BkI, BkD, 
-    new TrapezoidProfile.Constraints(65, 55));
+    new TrapezoidProfile.Constraints(50, 50));
   
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -111,27 +112,40 @@ public class ArmSubsystem extends SubsystemBase {
     ExtendArm(0);
     //m_Talonmotor.set(ControlMode.PercentOutput, 0);
     //m_Talonmotor2.set(ControlMode.PercentOutput, 0);
+    //if (m_Talonmotor2.getSelectedSensorVelocity() < 0.05 && getArmAngle() > 5){
+      //m_Talonmotor2.setSelectedSensorPosition(0);
+    //}
   }
   public void HighPlace() {
     //places game piece in the top row
     LiftArm();
     BendArm(85);
-    ExtendArm(32);
-    if (getArmAngle() > 80) {
-      release();
+    if (getArmAngle()> 75) {
+      ExtendArm(28);
     }
+    //if (getExtension() > 30) {
+      //release();
+    //}
   }
   public void MidPlace() {
     //places the game piece in the middle row
     LowerArm();
-    BendArm(15);
-    ExtendArm(32);
+    BendArm(35);
+    if (getArmAngle() > 30){
+      ExtendArm(28);
+      //if (getExtension() > 26) {
+        //release();
+      //}
+    }
   }
   public void LowPlace() {
     //places the game piece in the bottom row
     LowerArm();
     BendArm(0);
-    ExtendArm(10);
+    ExtendArm(15);
+    //if (getExtension() > 13) {
+      //release();
+    //}
   }
   public void SinglePick() {
     //picks the game piece from the single substation
@@ -139,15 +153,24 @@ public class ArmSubsystem extends SubsystemBase {
   }
   public void DoublePick(){
     //picks the game piece from the double substation
-    LiftArm();
-    BendArm(20);
-    ExtendArm(10);
+    BendArm(90);
+    if (getArmAngle() > 85) {
+      LiftArm();
+      ExtendArm(10);
+      //if (getExtension() > 8) {
+      //grip();
+      //}
+    }
+    
   }
   public void FloorPick() {
     //picks the game piece from the floor
     LiftArm();
     BendArm(0);
     ExtendArm(15);
+    //if (getExtension() > 13){
+      //grip();
+    //}
   }
   public void ResetEncoders() {
     //Reset the encoders for home position
